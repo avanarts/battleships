@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleships</title>
+    <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+    <div id="game-info">
+        <p>Turn: <span id="turn"></span></p>
+        <p>Info: <span id="info"></span></p>
+    </div>
+
+
+    <div class="grid-container" id="grid-container"></div>
+
+    <div class="options-container" id="options-container">
+        <div id="0" class="destroyer-preview" draggable="true"></div>
+        <div id="1" class="submarine-preview" draggable="true"></div>
+        <div id="2" class="cruiser-preview" draggable="true"></div>
+        <div id="3" class="battleship-preview" draggable="true"></div>
+        <div id="4" class="carrier-preview" draggable="true"></div>
+    </div>
+
+    <button class="flip-ship" id="flip-ship">Flip</button>
+    <button class="start-btn" id="start-btn">Start</button>
+
+    <script src="app.js"></script>
+</body>
+</html>
