@@ -18,7 +18,7 @@
 .options-container {
     background-color: lightblue;
     width: 500px;
-    height: 60px;
+    height: 80px;
     display: flex;
     align-items: center;
 }
@@ -44,7 +44,7 @@
 
 .submarine-preview {
     background-color: darkred;
-    width: 10px;
+    width: 40px;
     height: 10px;
     margin: 5px;
 }
@@ -55,7 +55,7 @@
 
 .cruiser-preview {
     background-color: white;
-    width: 30px;
+    width: 40px;
     height: 10px;
     margin: 5px;
 }
@@ -66,7 +66,7 @@
 
 .battleship-preview {
     background-color: darkorchid;
-    width: 40px;
+    width: 50px;
     height: 10px;
     margin: 5px;
 }
@@ -77,7 +77,7 @@
 
 .carrier-preview {
     background-color: darkorange;
-    width: 50px;
+    width: 60px;
     height: 10px;
     margin: 5px;
 }
@@ -92,5 +92,17 @@
 }
 
 .hit {
-    background-color: red;
+    background-color: red !important;
+}
+
+.empty {
+    background-color: rgb(42, 42, 42) !important;
+}
+
+#computer .destroyer,
+#computer .submarine,
+#computer .cruiser,
+#computer .battleship,
+#computer .carrier {
+    background-color: gray;
 }
