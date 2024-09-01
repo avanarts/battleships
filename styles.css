@@ -1,6 +1,7 @@
 body {
     background-color: rgb(27, 27, 27);
     color: rgb(224, 224, 224);
+    font-size: 12pt;
 }
 
 .container {
@@ -13,16 +14,21 @@ body {
 
 h1 {
     color: #8B008B;
+    font-size: 40pt;
 }
 
 button {
-    background-color: #8B008B;
+    background-color: #000000;
     color: white;
     margin: 10px;
     border: none;
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
+    height: 30px;
+    width: 60px;
+    font-size: 10pt;
+}
+
+button:hover {
+    background-color: #f300f3;
 }
 
 .grid {

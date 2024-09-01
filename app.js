@@ -5,6 +5,10 @@ const gridContainer = document.getElementById('grid-container')
 const startButton = document.getElementById('start-btn')
 const infoDisplay = document.getElementById('info')
 const turnDisplay = document.getElementById('turn')
+const gameTimer = document.getElementById('game-timer')
+const timerHeader = document.getElementById('timer-header')
+let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0]
+let interval = null
 
 
 //allows the player to flip ships before placement
@@ -48,17 +52,15 @@ class Ship {
     }
 }
 
-
+//creating ship objects
 const destroyer = new Ship('destroyer', 2)
 const submarine = new Ship('submarine', 3)
 const cruiser = new Ship('cruiser', 3)
 const battleship = new Ship('battleship', 4)
 const carrier = new Ship('carrier', 5)
 
-//to create ships visually, we'll need to loop through array
-
+//to show ships visually, we'll need to loop through array
 const ships = [destroyer, submarine, cruiser, battleship, carrier]
-let notDropped
 
 const handleValidity = (allGridCubes, isHorizontal, startIndex, ship) => {
     let shipBlocks = []
@@ -91,7 +93,8 @@ const handleValidity = (allGridCubes, isHorizontal, startIndex, ship) => {
     return { shipBlocks, valid, freeSpaces }
 }
 
-
+//this section adds ships to the board, either to computer or player boards
+let notDropped
 const addShips = (user, ship, startId) => {
     const allGridCubes = document.querySelectorAll(`#${user} div`)
     let randBoolean = Math.random() < 0.5 //returns either true or false
@@ -116,7 +119,7 @@ const addShips = (user, ship, startId) => {
 ships.forEach(ship => addShips('computer', ship))
 
 
-//player ships
+//handling player ships
 
 const optionShips = Array.from(optionsContainer.children)
 let draggedShip
@@ -182,6 +185,8 @@ const startGame = () => {
             playerTurn = true
             turnDisplay.textContent = 'Your turn!'
             infoDisplay.textContent = 'The game has started.'
+            timerHeader.textContent = 'Time Elapsed:'
+            interval = setInterval(timer, 10)
         }
     }
 }
@@ -277,17 +282,42 @@ const checkScore = (user, userHits, userSunkShips) => {
     checkShip('cruiser', 3)
     checkShip('battleship', 4)
     checkShip('carrier', 5)
-    console.log('playerHits', playerHits)
-    console.log('playersunkships', playerSunkShips)
 
+//if length of sunkShips array is 5, then that means all 5 ships are sunk and game is over
     if (playerSunkShips.length === 5) {
         infoDisplay.textContent = 'All computer ships sunk. YOU WIN!'
         gameOver = true
+        clearInterval(interval)
     }
     if (computerSunkShips.length === 5) {
         infoDisplay.textContent = 'All your ships sunk. YOU LOSE!'
         gameOver = true
+        clearInterval(interval)
     }
+}
+
+const timer = () => {
+    milliseconds += 10
+        if (milliseconds == 1000) {
+            milliseconds = 0
+            seconds++
+            if (seconds == 60) {
+                seconds = 0
+                minutes++
+                if (minutes == 60) {
+                    hours++
+                }
+            }
+        } 
+
+
+
+    let h = hours < 10 ? `0${hours}` : hours
+    let m = minutes < 10 ? `0${minutes}` : minutes
+    let s = seconds < 10 ? `0${seconds}` : seconds
+    let ms = milliseconds < 10 ? `00${milliseconds}` : milliseconds < 100 ? `0${milliseconds}` : milliseconds
+
+        gameTimer.textContent = ` ${h} : ${m} : ${s} : ${ms}`
 }
 
 
@@ -300,3 +330,6 @@ playerCubes.forEach(cube => {
     cube.addEventListener('drop', dropShip)
 })
 startButton.addEventListener('click', startGame)
+/*startButton.addEventListener('click', () => {
+    setInterval(timer, 10)
+})*/
