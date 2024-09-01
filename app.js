@@ -6,11 +6,9 @@ const startButton = document.getElementById('start-btn')
 const infoDisplay = document.getElementById('info')
 const turnDisplay = document.getElementById('turn')
 
-console.log(infoDisplay)
 
-
+//allows the player to flip ships before placement
 let angle = 0
-
 const flipShip = () => {
     const optionShips = Array.from(optionsContainer.children)
     angle === 0 ? angle = 90 : angle = 0;
@@ -38,7 +36,7 @@ const createGrid = (color, user) => {
 
 }
 
-createGrid('blue', 'player');
+createGrid('#297FDE', 'player');
 createGrid('gray', 'computer');
 
 
