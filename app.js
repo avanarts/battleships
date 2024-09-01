@@ -186,7 +186,7 @@ const startGame = () => {
             turnDisplay.textContent = 'Your turn!'
             infoDisplay.textContent = 'The game has started.'
             timerHeader.textContent = 'Time Elapsed:'
-            interval = setInterval(timer, 10)
+            interval = setInterval(timer, 1000)
         }
     }
 }
@@ -297,27 +297,22 @@ const checkScore = (user, userHits, userSunkShips) => {
 }
 
 const timer = () => {
-    milliseconds += 10
-        if (milliseconds == 1000) {
-            milliseconds = 0
-            seconds++
-            if (seconds == 60) {
-                seconds = 0
-                minutes++
-                if (minutes == 60) {
-                    hours++
-                }
+
+    seconds++
+        if (seconds == 60) {
+            seconds = 0
+            minutes++
+            if (minutes == 60) {
+                minutes = 0
+                hours++
             }
-        } 
-
-
+        }
 
     let h = hours < 10 ? `0${hours}` : hours
     let m = minutes < 10 ? `0${minutes}` : minutes
     let s = seconds < 10 ? `0${seconds}` : seconds
-    let ms = milliseconds < 10 ? `00${milliseconds}` : milliseconds < 100 ? `0${milliseconds}` : milliseconds
 
-        gameTimer.textContent = ` ${h} : ${m} : ${s} : ${ms}`
+        gameTimer.textContent = ` ${h} : ${m} : ${s} `
 }
 
 
@@ -330,6 +325,3 @@ playerCubes.forEach(cube => {
     cube.addEventListener('drop', dropShip)
 })
 startButton.addEventListener('click', startGame)
-/*startButton.addEventListener('click', () => {
-    setInterval(timer, 10)
-})*/

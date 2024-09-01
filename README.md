@@ -1,4 +1,4 @@
 # battleships
 
 
-Game still in progress, more to come later.
+Simple Battleships game created with HTML, CSS, & Javascript.
