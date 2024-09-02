@@ -1,18 +1,22 @@
-//document objects
+//document objects & variables
 const shipFlipButton = document.getElementById('flip-ship')
 const optionsContainer = document.querySelector('.options-container')
 const gridContainer = document.getElementById('grid-container')
 const startButton = document.getElementById('start-btn')
 const infoDisplay = document.getElementById('info')
 const turnDisplay = document.getElementById('turn')
+
 const gameTimer = document.getElementById('game-timer')
 const timerHeader = document.getElementById('timer-header')
 let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0]
 let interval = null
 
+let angle = 0
+let notDropped
+
+
 
 //allows the player to flip ships before placement
-let angle = 0
 const flipShip = () => {
     const optionShips = Array.from(optionsContainer.children)
     angle === 0 ? angle = 90 : angle = 0;
@@ -21,7 +25,7 @@ const flipShip = () => {
     })
 }
 
-//creating boards
+//allows creation of board for player and computer, with the color of the board and the player as inputs
 const createGrid = (color, user) => {
     const gridCube = document.createElement('div')
     gridCube.classList.add('game-board')
@@ -34,17 +38,15 @@ const createGrid = (color, user) => {
         cube.id = i
         gridCube.append(cube)
     }
-
     gridContainer.append(gridCube)
-
-
 }
 
+//creating boards
 createGrid('#297FDE', 'player');
 createGrid('gray', 'computer');
 
 
-//creating ships
+//Ship class allows for easy creation of new ship objects
 class Ship {
     constructor(name, length) {
         this.name = name;
@@ -59,14 +61,14 @@ const cruiser = new Ship('cruiser', 3)
 const battleship = new Ship('battleship', 4)
 const carrier = new Ship('carrier', 5)
 
-//to show ships visually, we'll need to loop through array
+//to show ships visually, we'll need to loop through an array of all ship objects
 const ships = [destroyer, submarine, cruiser, battleship, carrier]
 
 const handleValidity = (allGridCubes, isHorizontal, startIndex, ship) => {
     let shipBlocks = []
     let valid
 
-    //horizontal
+    //horizontal validity
     let validStart = isHorizontal 
     ? startIndex <= 100 - ship.length ? startIndex : 100 - ship.length
     //vertical
@@ -94,7 +96,6 @@ const handleValidity = (allGridCubes, isHorizontal, startIndex, ship) => {
 }
 
 //this section adds ships to the board, either to computer or player boards
-let notDropped
 const addShips = (user, ship, startId) => {
     const allGridCubes = document.querySelectorAll(`#${user} div`)
     let randBoolean = Math.random() < 0.5 //returns either true or false
@@ -102,6 +103,7 @@ const addShips = (user, ship, startId) => {
     let randStartIndex = Math.floor(Math.random() * 100)
     let startIndex = startId ? startId : randStartIndex
 
+    //this gets the returned values from the handleValidity function in order to use them in addShips
     const { shipBlocks, valid, freeSpaces } = handleValidity(allGridCubes, isHorizontal, startIndex, ship)
 
 
@@ -116,11 +118,11 @@ const addShips = (user, ship, startId) => {
     }
 }
 
+//this adds the computer ships randomly
 ships.forEach(ship => addShips('computer', ship))
 
 
 //handling player ships
-
 const optionShips = Array.from(optionsContainer.children)
 let draggedShip
 
@@ -130,25 +132,27 @@ const dragStart = (e) => {
         draggedShip = e.target;
 }
 
+//calls highlightArea function over hovered blocks
 const dragOver = (e) => {
     e.preventDefault()
     const ship = ships[draggedShip.id]
     highlightArea(e.target.id, ship)
 }
 
+//this allows a ship to be created on the player board, grabbing a start id from where the user drops the ship, and calling addShips
 const dropShip = (e) => {
     const startId = e.target.id
-    console.log(draggedShip.id)
     const ship = ships[draggedShip.id]
     addShips('player', ship, startId)
     if (!notDropped) {
         draggedShip.remove()
     }
 }
+
 const playerCubes = document.querySelectorAll('#player div')
 
 
-//highlighting
+//this highlights the area where the ship will be dropped once player releases mouse
 const highlightArea = (startIndex, ship) => {
     const allBoardBlocks = document.querySelectorAll('#player div')
     let isHorizontal = angle === 0
@@ -165,8 +169,6 @@ const highlightArea = (startIndex, ship) => {
 
 
 
-
-
 //game logic
 let gameOver = false
 let playerTurn
@@ -175,6 +177,8 @@ let computerHits = []
 const playerSunkShips = []
 const computerSunkShips = []
 
+
+//if options container is empty, the player can start the game and gets to make the first move. A stopwatch is additionally started to track time.
 const startGame = () => {
     if (playerTurn === undefined) {
         if (optionsContainer.children.length != 0) {
@@ -191,13 +195,14 @@ const startGame = () => {
     }
 }
 
+//this allows player to make guesses, as long as game is not over. 
 const handleClick = (e) => {
     if (!gameOver) {
         if (e.target.classList.contains('taken')) {
             e.target.classList.add('hit')
             infoDisplay.textContent = 'You hit the computer\'s ship!'
 
-
+            //this will track which ship(s) the player has hit
             let classes = Array.from(e.target.classList)
             classes = classes.filter(className => className !== 'block')
             classes = classes.filter(className => className !== 'hit')
@@ -205,6 +210,7 @@ const handleClick = (e) => {
             playerHits.push(...classes)
             checkScore('player', playerHits, playerSunkShips)
         }
+        //adds appropriate classes for if player misses or hits computer ship
         if (!e.target.classList.contains('taken')) {
             infoDisplay.textContent = 'Miss!'
             e.target.classList.add('empty')
@@ -212,6 +218,7 @@ const handleClick = (e) => {
         playerTurn = false
         const allBoardBlocks = document.querySelectorAll('#computer div')
 
+        //removes event listeners
         allBoardBlocks.forEach(block => block.replaceWith(block.cloneNode(true)))
         setTimeout(computerTurn, 2000)
 
@@ -262,6 +269,7 @@ const computerTurn = (e) => {
     }
 }
 
+//keeps track of score and whether game is over or not
 const checkScore = (user, userHits, userSunkShips) => {
     const checkShip = (shipName, shipLength) => {
         if (userHits.filter(storedShipName => storedShipName === shipName).length ===shipLength) {
@@ -296,6 +304,7 @@ const checkScore = (user, userHits, userSunkShips) => {
     }
 }
 
+//adds stopwatch functionality to track how long your game is
 const timer = () => {
 
     seconds++
